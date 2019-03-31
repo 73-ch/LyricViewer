@@ -53,7 +53,7 @@ void TextMesh::setText(const string text, const float thickness) {
 
 void TextMesh::calcOffset() {
     auto bounding_box = font.getStringBoundingBox(current_text, 0, 0);
-    offset = vec3(bounding_box.getWidth(), bounding_box.getHeight(), 5) * .5;
+    offset = vec3(bounding_box.getWidth(), bounding_box.getHeight(), current_thickness) * .5;
 }
 
 void TextMesh::draw(ofPolyRenderMode render_type) {

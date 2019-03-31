@@ -18,13 +18,34 @@ void ofApp::setup(){
     font_settings.antialiased = true;
     font.load(font_settings);
     
+    main_text = "Hello world";
+    
     text_mesh = new TextMesh(font);
     
-    text_mesh->setText("LyricsGenerator", 5);
+    text_mesh->setText(main_text, 5);
     
     ofxSubscribeOsc(2323, "/set_text", [&](const string &text) {
         text_mesh->setText(text, 5);
+        kakkuri_mesh->setText(text, 30);
+        
+        main_text = text;
     });
+    
+    ofxSubscribeOsc(2323, "/set_scene", scene);
+    ofxSubscribeOsc(2323, "/set_index_mode", [=](const int index){
+        ofLogNotice() << index;
+        kakkuri_mesh->setIndexMode(static_cast<KakkuriIndexMode>(index));
+    });
+    
+    ofxSubscribeOsc(2323, "/set_primitive_mode", [=](const int i, const bool auto_index = false){
+        ofLogNotice() << i;
+        kakkuri_mesh->setPrimitiveMode(static_cast<ofPrimitiveMode>(i), auto_index);
+    });
+    
+    ofxSubscribeOsc(2323, "/set_roughness", roughness);
+
+    kakkuri_mesh = new KakkuriText(font);
+    
 }
 
 //--------------------------------------------------------------
@@ -42,7 +63,13 @@ void ofApp::draw(){
     cam.begin();
     ofSetColor(200, 200, 200);
     light.enable();
-    text_mesh->draw();
+    
+    if (scene) {
+        text_mesh->draw();
+    } else {
+        kakkuri_mesh->setText(main_text, roughness);
+        kakkuri_mesh->draw();
+    }
 
     cam.end();
     ofSetColor(255);

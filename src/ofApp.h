@@ -1,8 +1,11 @@
 #pragma once
 
 #include "ofMain.h"
-#include "TextMesh.h"
 #include "ofxPubSubOsc.h"
+
+#include "TextMesh.h"
+#include "KakkuriText.h"
+
 
 using namespace glm;
 
@@ -30,32 +33,7 @@ class ofApp : public ofBaseApp{
     ofLight light;
     string main_text;
     TextMesh* text_mesh;
-    
-    ofMesh iikanjiText(const ofTrueTypeFont& font, const string text, const float roughness) {
-        auto font_paths = font.getStringAsPoints(text);
-        ofMesh m;
-        for (auto p : font_paths) {
-            p.setStrokeWidth(20);
-        
-            // side
-            vector<ofPolyline> outlines = p.getOutline();
-            
-            for (auto& l : outlines) {
-                l = l.getResampledBySpacing(roughness);
-                ofMesh temp;
-                // side verts
-                temp.addVertices(l.getVertices());
-                
-//                auto temp_verts = l.getVertices();
-                // side indices
-//                unsigned int len = l.getVertices().size();
-//
-//                for (unsigned int i =0 ; i< len-1; ++i) temp.addIndices({i, i+1, i + len, i +len, i+len+1, i + 1});
-//
-                m.append(temp);
-            }
-        }
-        return m;
-    }
-
+    KakkuriText* kakkuri_mesh;
+    bool scene;
+    float roughness = 20;
 };
